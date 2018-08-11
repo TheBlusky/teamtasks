@@ -1,7 +1,9 @@
+import uuid
 from django.db import models, IntegrityError
 from django.utils import timezone
 import django.contrib.auth
 
+from core.utils import ldap_authenticate
 from core import exceptions
 from core.exceptions import (
     AlreadyWorking,
@@ -10,6 +12,7 @@ from core.exceptions import (
     AlreadyWorked,
     DayAlreadyExists,
 )
+from teamtasks import configuration
 
 
 class Team(models.Model):
@@ -69,9 +72,20 @@ class User(models.Model):
 
     @classmethod
     def login_user(cls, username, password, request):
-        django_user = django.contrib.auth.authenticate(
-            request, username=username, password=password
-        )
+        if configuration.LDAP_ENABLED:
+            user_model = django.contrib.auth.get_user_model()
+            try:
+                ldap_info = ldap_authenticate(username, password)
+                django_user = user_model.objects.get(username=username)
+            except user_model.DoesNotExist:
+                user = User.create_user(
+                    ldap_info["username"], ldap_info["email"], str(uuid.uuid4())
+                )
+                django_user = user.django_user
+        else:
+            django_user = django.contrib.auth.authenticate(
+                request, username=username, password=password
+            )
         if django_user is not None:
             django.contrib.auth.login(request, django_user)
         else:

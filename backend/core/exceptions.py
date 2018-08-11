@@ -2,6 +2,12 @@ from rest_framework import status
 from rest_framework.exceptions import APIException
 
 
+class RegistrationNotAllowed(APIException):
+    status_code = status.HTTP_403_FORBIDDEN
+    default_code = "registration_not_allowed"
+    default_detail = "registration_not_allowed"
+
+
 class NotAdmin(APIException):
     status_code = status.HTTP_403_FORBIDDEN
     default_code = "not_admin"

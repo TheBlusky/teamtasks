@@ -5,7 +5,9 @@ from rest_framework.urls import logout
 
 from api.serializers.user import RegisterSerializer, LoginSerializer, TeammateSerializer
 from api.utils import IsTeamTasksUser, IsTeamTasksMember
+from core.exceptions import RegistrationNotAllowed
 from core.models import User
+from teamtasks import configuration
 
 
 class UserViewSet(viewsets.ViewSet):
@@ -13,6 +15,8 @@ class UserViewSet(viewsets.ViewSet):
 
     @action(methods=["post"], detail=False, permission_classes=[])
     def register(self, request):
+        if not configuration.ALLOW_REGISTER or configuration.LDAP_ENABLED:
+            raise RegistrationNotAllowed()
         serialized = RegisterSerializer(data=request.data)
         serialized.is_valid(raise_exception=True)
         User.create_user(
@@ -41,12 +45,15 @@ class UserViewSet(viewsets.ViewSet):
 
     @action(methods=["get"], detail=False, permission_classes=[])
     def status(self, request):
+        can_register = configuration.ALLOW_REGISTER or configuration.LDAP_ENABLED
         if (
             not request.user
             or not request.user.is_authenticated
             or not User.objects.filter(django_user=request.user).exists()
         ):
-            return Response({"status": "ok", "level": "Anonymous"})
+            return Response(
+                {"status": "ok", "level": "Anonymous", "can_register": can_register}
+            )
         user = User.objects.get(django_user=request.user)
         username = user.django_user.username
         team_name = user.team.name if user.team else None
@@ -57,6 +64,7 @@ class UserViewSet(viewsets.ViewSet):
                     "level": "User",
                     "username": username,
                     "team_name": team_name,
+                    "can_register": can_register,
                 }
             )
         if not user.is_admin:
@@ -66,6 +74,7 @@ class UserViewSet(viewsets.ViewSet):
                     "level": "Member",
                     "username": username,
                     "team_name": team_name,
+                    "can_register": can_register,
                 }
             )
         return Response(
@@ -74,6 +83,7 @@ class UserViewSet(viewsets.ViewSet):
                 "level": "Admin",
                 "username": username,
                 "team_name": team_name,
+                "can_register": can_register,
             }
         )
 

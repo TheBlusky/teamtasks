@@ -7,5 +7,12 @@ services:
       - ../backend/:/tmp_backend/
     links:
       - postgres
+      - ldap
     working_dir: /tmp_backend/
     command: ./runtests.sh
+
+  ldap:
+    image: osixia/openldap:latest
+    volumes:
+      - ../misc/ldap_tests/data:/var/lib/ldap
+      - ../misc/ldap_tests/config:/etc/ldap/slapd.d

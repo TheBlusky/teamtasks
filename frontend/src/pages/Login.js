@@ -3,6 +3,7 @@ import { Grid, Cell } from 'styled-css-grid'
 import { Card, Elevation, Tabs, Tab } from '@blueprintjs/core'
 import LoginForm from '../components/login/LoginForm'
 import RegisterForm from '../components/login/RegisterForm'
+import {connect} from 'react-redux'
 
 class LoginPage extends Component {
   render () {
@@ -12,7 +13,7 @@ class LoginPage extends Component {
           <Card elevation={Elevation.TWO}>
             <Tabs>
               <Tab id='tab_login' title='Login' panel={<LoginForm />} />
-              <Tab id='tab_register' title='Register' panel={<RegisterForm />} />
+              <Tab id='tab_register' title='Register' disabled={!this.props.canRegister} panel={<RegisterForm />} />
             </Tabs>
           </Card>
         </Cell>
@@ -21,4 +22,18 @@ class LoginPage extends Component {
   }
 }
 
-export default LoginPage
+const mapStateToProps = (state, ownProps) => {
+  return {
+    canRegister: state.teamtasksStore.currentUser.canRegister
+  }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LoginPage)

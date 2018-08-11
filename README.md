@@ -42,7 +42,7 @@ They can :
 
 ### Roadmap
 
-- [ ] LDAP connector
+- [x] LDAP connector
 - [ ] Time indicators settings
 - [ ] Almighty admin's power (remove user, remove workdays)
 - [ ] Removing misclicked tasks

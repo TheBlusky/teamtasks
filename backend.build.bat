@@ -1,1 +1,1 @@
-docker-compose -p teamtasks -f docker/docker-compose.yml build backend
+docker-compose -p teamtasks -f docker-compose/docker-compose.yml build backend

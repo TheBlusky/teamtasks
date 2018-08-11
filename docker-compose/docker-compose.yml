@@ -5,7 +5,7 @@ services:
     image: theblusky/teamtasks:frontend
     build:
       context: ..
-      dockerfile: docker/Dockerfile-frontend
+      dockerfile: Dockerfile-frontend
     links:
      - backend
 
@@ -13,7 +13,7 @@ services:
     image: theblusky/teamtasks:backend
     build:
       context: ..
-      dockerfile: docker/Dockerfile-backend
+      dockerfile: Dockerfile-backend
     links:
       - postgres
     command: gunicorn teamtasks.wsgi -w 4 --preload --log-file - --access-logfile - --bind 0.0.0.0:8000

@@ -1,0 +1,10 @@
+FROM node:latest
+RUN mkdir /teamtasks/
+COPY . /teamtasks/
+WORKDIR /teamtasks/frontend/
+RUN npm install
+RUN npm run build
+
+FROM nginx:latest
+COPY --from=0 /teamtasks/frontend/build/ /usr/share/nginx/html/
+COPY ./misc/nginx.conf /etc/nginx/conf.d/default.conf

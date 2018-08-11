@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  frontend:
+    image: theblusky/teamtasks:frontend
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile-frontend
+    links:
+     - backend
+
+  backend:
+    image: theblusky/teamtasks:backend
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile-backend
+    links:
+      - postgres
+    command: gunicorn teamtasks.wsgi -w 4 --preload --log-file - --access-logfile - --bind 0.0.0.0:8000
+
+  postgres:
+    image: postgres:latest
+    environment:
+      - "POSTGRES_USER=teamtasks"
+      - "POSTGRES_PASSWORD=teamtasks"

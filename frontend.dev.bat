@@ -1,0 +1,1 @@
+docker-compose -p teamtasks  -f docker/docker-compose.yml -f docker/docker-compose.frontdev.yml up frontdev

@@ -1,0 +1,1 @@
+docker-compose -p teamtasks  -f docker/docker-compose.yml -f docker/docker-compose.migrations.yml run --rm migrations

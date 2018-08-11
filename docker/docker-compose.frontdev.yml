@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  frontdev:
+    image: node:latest
+    volumes:
+      - ../frontend/:/tmp_frontend/
+      - node_modules:/tmp_frontend/node_modules
+    ports:
+      - 3000:3000
+    links:
+      - backend
+    working_dir: /tmp_frontend/
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    command: sh ./frontdev.sh
+
+volumes:
+  node_modules:

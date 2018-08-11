@@ -1,0 +1,7 @@
+black==18.6b4
+coverage==4.5.1
+djangorestframework==3.8.2
+django==2.1
+gunicorn==19.9.0
+piprot==0.9.10
+psycopg2-binary==2.7.5

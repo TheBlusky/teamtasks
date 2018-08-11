@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  migrations:
+    image: theblusky/teamtasks:backend
+    volumes:
+      - ../backend/:/tmp_backend/
+    links:
+      - postgres
+    working_dir: /tmp_backend/
+    command: ./migrations.sh

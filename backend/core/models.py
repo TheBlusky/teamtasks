@@ -157,7 +157,7 @@ class WorkDay(models.Model):
 class Task(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     workday = models.ForeignKey("WorkDay", on_delete=models.CASCADE)
-    label = models.CharField(max_length=32)
+    label = models.CharField(max_length=64)
     comments_planning = models.TextField(blank=True, default="")
     comments_validation = models.TextField(blank=True, default="")
     done = models.BooleanField(default=False)

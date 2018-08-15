@@ -17,7 +17,7 @@ class HomePage extends Component {
 
   render () {
     return (
-      <Grid columns={'300px minmax(400px, 1fr)'}>
+      <Grid columns={'250px minmax(400px, 1fr)'}>
         <Cell style={{'padding': '10px'}}><Menu /></Cell>
         <Cell style={{'padding': '10px'}}>
           {this.props.displayedPage === pages.PAGE_DEFAULT && <Home />}

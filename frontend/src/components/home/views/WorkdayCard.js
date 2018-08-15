@@ -42,7 +42,9 @@ class WorkdayCard extends Component {
           </Cell>
           <Cell>
             <Grid columns={'20px 20px 20px 1fr'}>
-              { task_set.map((task) => (<TaskCells key={task.id} task={task} />)) }
+              { task_set.map((task) => (
+                <TaskCells key={task.id} task={task} workdayPlannedAt={this.props.workday.planned_at} />
+              )) }
             </Grid>
           </Cell>
         </Grid>

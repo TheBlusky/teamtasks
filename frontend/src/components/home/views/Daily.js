@@ -20,21 +20,25 @@ class Daily extends Component {
   getWordayIcon = (workday) => {
     if (!workday) return 'delete'
     if (workday.validated_at) return 'tick'
-    if (workday.planned_at) return 'log-out'
-    if (workday.created_at) return 'log-in'
+    if (workday.planned_at) return 'log-in'
+    if (workday.created_at) return 'log-out'
     return ''
   }
 
   componentDidMount () {
+    this.loadData(this.props)
+  }
+
+  loadData = (props) => {
     const actionId = actions.generateActionId()
-    this.props.requestWorkdayList(1, true, actionId)
+    props.requestWorkdayList(1, true, actionId)
     this.setState({loadings: [actionId]})
   }
 
   shouldComponentUpdate (nextProps, nextState) {
     let shouldUpdate = true
     if (JSON.stringify(this.props.filters) !== JSON.stringify(nextProps.filters)) {
-      this.componentDidMount()
+      this.loadData(nextProps)
       shouldUpdate = false
     }
     if (JSON.stringify(this.props.workdays.loadings) !== JSON.stringify(nextProps.workdays.loadings)) {

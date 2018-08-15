@@ -51,8 +51,8 @@ class Planning extends Component {
     this.setState({
       tasks: this.state.tasks.map((task, i) => {
         if (i !== index) return task
-        if (type === 'label') return {...task, label: value}
-        if (type === 'comments_planning') return {...task, comments_planning: value}
+        if (type === 'label') return {...task, label: value.substring(0, 64).replace("\n", "")}
+        if (type === 'comments_planning') return {...task, comments_planning: value.replace("\n", "")}
         return task
       })
     })
@@ -131,7 +131,9 @@ class Planning extends Component {
                 placeholder={this.state.fortune.task}
                 value={this.state.newTaskLabel}
                 disabled={this.state.newTaskActionId}
-                onChange={(newTaskLabel) => this.setState({newTaskLabel})} />
+                onChange={(newTaskLabel) => this.setState({
+                  newTaskLabel: newTaskLabel.substring(0, 64).replace("\n", "")
+                })} />
             </Cell>
             <Cell>
               <EditableText
@@ -139,7 +141,9 @@ class Planning extends Component {
                 disabled={this.state.newTaskActionId}
                 placeholder={this.state.fortune.comment}
                 value={this.state.newTaskComment}
-                onChange={(newTaskComment) => this.setState({newTaskComment})} />
+                onChange={(newTaskComment) => this.setState({
+                  newTaskComment: newTaskComment.replace("\n", "")}
+                )} />
             </Cell>
             <Cell>
               {this.state.newTaskActionId
@@ -147,7 +151,7 @@ class Planning extends Component {
                 : <Button
                   className='bp3-small'
                   icon='add'
-                  disabled={this.state.newTaskLabel === '' || this.state.newTaskComment === ''}
+                  disabled={this.state.newTaskLabel === ''}
                   onClick={this.addTask} />
               }
             </Cell>

@@ -1,15 +1,23 @@
 import * as actions from '../redux/actions'
 
-const workdays = (state = {workdays: [], loadings: []}, action) => {
+const workdays = (state = {workdays: [], loadings: [], pageData: undefined}, action) => {
   switch (action.type) {
+    case actions.PAGE_CHANGE:
+      if (JSON.stringify(action.data) !== JSON.stringify(state.pageData)) {
+        return {...state, workdays: [], pageData: action.data}
+      } else {
+        return state
+      }
     case actions.API_WORKDAYS_LIST_REQUEST:
       return {
+        ...state,
         workdays: action.resetState ? [] : state.workdays,
         loadings: [...state.loadings, action.actionId]
       }
     case actions.API_WORKDAYS_LIST_SUCCESS:
       const currentWorkdaysIds = state.workdays.map((workday) => (workday.id))
       return {
+        ...state,
         workdays: [
           ...state.workdays,
           ...action.data.data.filter((task) => (
@@ -20,6 +28,7 @@ const workdays = (state = {workdays: [], loadings: []}, action) => {
       }
     case actions.API_WORKDAYS_LIST_FAILURE:
       return {
+        ...state,
         workdays: state.workdays,
         loadings: state.loadings.filter((actionId) => (actionId !== action.actionId))
       }

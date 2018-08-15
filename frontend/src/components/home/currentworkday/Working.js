@@ -53,10 +53,9 @@ class Working extends Component {
     this.setState({
       tasks: this.state.tasks.map((task, i) => {
         if (i !== index) return task
-        if (type === 'label') return {...task, label: value}
-        if (type === 'comments_validation') return {...task, comments_validation: value}
+        if (type === 'label') return {...task, label: value.substring(0, 64).replace("\n", "")}
+        if (type === 'comments_validation') return {...task, comments_validation: value.replace("\n", "")}
         if (type === 'done') return {...task, done: value}
-        if (type === 'comments_validation') return {...task, comments_validation: value}
         return task
       })
     })
@@ -166,7 +165,9 @@ class Working extends Component {
                 value={this.state.newTaskLabel}
                 placeholder={this.state.fortune.task}
                 disabled={this.state.newTaskActionId}
-                onChange={(newTaskLabel) => this.setState({newTaskLabel})} />
+                onChange={(newTaskLabel) => this.setState({
+                  newTaskLabel: newTaskLabel.substring(0, 64).replace("\n", "")
+                })} />
             </Cell>
             <Cell>
               <EditableText
@@ -174,7 +175,9 @@ class Working extends Component {
                 disabled={this.state.newTaskActionId}
                 placeholder={this.state.fortune.comment}
                 value={this.state.newTaskComment}
-                onChange={(newTaskComment) => this.setState({newTaskComment})} />
+                onChange={(newTaskComment) => this.setState({
+                  newTaskComment: newTaskComment.replace("\n", "")}
+                )} />
             </Cell>
             <Cell>
               <Checkbox
@@ -187,7 +190,7 @@ class Working extends Component {
                 : <Button
                   className='bp3-small'
                   icon='add'
-                  disabled={this.state.newTaskLabel === '' || this.state.newTaskComment === ''}
+                  disabled={this.state.newTaskLabel === ''}
                   onClick={this.addTask} />
               }
             </Cell>

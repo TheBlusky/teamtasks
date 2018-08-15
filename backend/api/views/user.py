@@ -45,7 +45,7 @@ class UserViewSet(viewsets.ViewSet):
 
     @action(methods=["get"], detail=False, permission_classes=[])
     def status(self, request):
-        can_register = configuration.ALLOW_REGISTER or configuration.LDAP_ENABLED
+        can_register = configuration.ALLOW_REGISTER or not configuration.LDAP_ENABLED
         if (
             not request.user
             or not request.user.is_authenticated

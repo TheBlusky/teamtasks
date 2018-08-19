@@ -30,6 +30,9 @@
   "proxy": {
     "/api": {
       "target": "http://backend:8000/"
+    },
+    "/gamification": {
+      "target": "http://backend:8000/"
     }
   }
 }

@@ -8,4 +8,4 @@ services:
     links:
       - postgres
     working_dir: /tmp_backend/
-    command: ./migrations.sh
+    command: sh migrations.sh

@@ -9,13 +9,7 @@ class CurrentUser extends Component {
     return (
       <BPMenu className={Classes.ELEVATION_1}>
         <MenuDivider title={this.props.currentUser.user.username} />
-        <MenuItem icon='predictive-analysis' text='Home' onClick={() => this.props.loadPage(pages.PAGE_DEFAULT)} />
-        {/*
-        <MenuItem icon='link' text='Level' label='1' />
-        <MenuItem icon='heart' text='HP' label='18/20' />
-        <MenuItem icon='build' text='XP' label='120/200' />
-        <MenuItem icon='timeline-bar-chart' text='Leaderboard' />
-        */}
+        <MenuItem icon='predictive-analysis' text='Fortune' onClick={() => this.props.loadPage(pages.PAGE_DEFAULT)} />
       </BPMenu>
     )
   }

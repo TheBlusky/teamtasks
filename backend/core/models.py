@@ -53,9 +53,6 @@ class User(models.Model):
     )
     slack_name = models.CharField(max_length=32, default="")
     is_admin = models.BooleanField(default=False)
-    level = models.IntegerField(default=1)
-    xp = models.IntegerField(default=0)
-    hp = models.IntegerField(default=5)
 
     @classmethod
     def create_user(cls, username, email, password):
@@ -74,8 +71,8 @@ class User(models.Model):
     def login_user(cls, username, password, request):
         if configuration.LDAP_ENABLED:
             user_model = django.contrib.auth.get_user_model()
+            ldap_info = ldap_authenticate(username, password)
             try:
-                ldap_info = ldap_authenticate(username, password)
                 django_user = user_model.objects.get(username=username)
             except user_model.DoesNotExist:
                 user = User.create_user(
@@ -138,19 +135,19 @@ class WorkDay(models.Model):
         workday.save()
         return workday
 
-    def validate_planning(self):
+    def validate_planning(self, force_date=False):
         if self.planned_at:
             raise AlreadyPlanned()
 
-        self.planned_at = timezone.now()
+        self.planned_at = force_date or timezone.now()
         self.save()
 
-    def validate_working(self):
+    def validate_working(self, force_date=False):
         if not self.planned_at:
             raise NotPlannedYet()
         if self.validated_at:
             raise AlreadyWorked()  # pragma: no cover
-        self.validated_at = timezone.now()
+        self.validated_at = force_date or timezone.now()
         self.save()
 
 

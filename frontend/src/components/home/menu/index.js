@@ -3,12 +3,15 @@ import Admin from './Admin'
 import Views from './Views'
 import Workday from './Workday'
 import CurrentUser from './CurrentUser'
+import Gamification from './Gamification'
 
 class Menu extends Component {
   render () {
     return (
       <div>
         <CurrentUser />
+        <div style={{'padding': '10px'}} />
+        <Gamification />
         <div style={{'padding': '10px'}} />
         <Workday />
         <div style={{'padding': '10px'}} />

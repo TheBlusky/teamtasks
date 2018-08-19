@@ -16,8 +16,5 @@ class TeammateSerializer(serializers.Serializer):
 
     id = serializers.IntegerField()
     django_user = DjangoUserSerialaier()
-    current_workday = serializers.IntegerField()
+    current_workday = serializers.PrimaryKeyRelatedField(read_only=True)
     is_admin = serializers.BooleanField()
-    level = serializers.IntegerField()
-    xp = serializers.IntegerField()
-    hp = serializers.IntegerField()

@@ -5,6 +5,8 @@ services:
     image: theblusky/teamtasks:backend
     volumes:
       - ../backend/:/tmp_backend/
+    environment:
+      - TZ=Europe/Paris
     links:
       - postgres
       - ldap

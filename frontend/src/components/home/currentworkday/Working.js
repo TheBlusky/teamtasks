@@ -53,8 +53,8 @@ class Working extends Component {
     this.setState({
       tasks: this.state.tasks.map((task, i) => {
         if (i !== index) return task
-        if (type === 'label') return {...task, label: value.substring(0, 64).replace("\n", "")}
-        if (type === 'comments_validation') return {...task, comments_validation: value.replace("\n", "")}
+        if (type === 'label') return {...task, label: value.substring(0, 64).replace('\n', '')}
+        if (type === 'comments_validation') return {...task, comments_validation: value.replace('\n', '')}
         if (type === 'done') return {...task, done: value}
         return task
       })
@@ -166,7 +166,7 @@ class Working extends Component {
                 placeholder={this.state.fortune.task}
                 disabled={this.state.newTaskActionId}
                 onChange={(newTaskLabel) => this.setState({
-                  newTaskLabel: newTaskLabel.substring(0, 64).replace("\n", "")
+                  newTaskLabel: newTaskLabel.substring(0, 64).replace('\n', '')
                 })} />
             </Cell>
             <Cell>
@@ -176,7 +176,7 @@ class Working extends Component {
                 placeholder={this.state.fortune.comment}
                 value={this.state.newTaskComment}
                 onChange={(newTaskComment) => this.setState({
-                  newTaskComment: newTaskComment.replace("\n", "")}
+                  newTaskComment: newTaskComment.replace('\n', '')}
                 )} />
             </Cell>
             <Cell>

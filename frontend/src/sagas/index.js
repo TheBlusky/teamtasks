@@ -4,6 +4,7 @@ import errors from './errors'
 import apiTeams from './apiTeams'
 import apiWorkdays from './apiWorkdays'
 import apiTasks from './apiTasks'
+import gamification from './gamification'
 
 function * sagas () {
   yield all([
@@ -11,6 +12,7 @@ function * sagas () {
     apiTeams(),
     apiUsers(),
     apiWorkdays(),
+    gamification(),
     errors()
   ])
 }

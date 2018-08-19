@@ -13,7 +13,7 @@ const currentUser = (state = {level: undefined, user: {}, loading: false, canReg
         user: {
           username: action.data.username,
           team_name: action.data.team_name
-        },
+        }
       }
     case actions.API_USERS_STATUS_FAILURE:
       return {level: undefined, user: {}, loading: false}

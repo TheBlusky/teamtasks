@@ -1,0 +1,1 @@
+docker-compose -p teamtasks -f docker-compose/docker-compose.yml down --remove-orphans

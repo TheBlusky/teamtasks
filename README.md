@@ -47,7 +47,7 @@ They can :
 - [ ] Almighty admin's power (remove user, remove workdays)
 - [ ] Removing misclicked tasks
 - [ ] Slack notifications
-- [ ] Gamification
+- [X] Gamification
 
 ### Run `Teamtasks`
 

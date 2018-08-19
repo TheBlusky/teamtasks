@@ -25,7 +25,7 @@ class Gamification extends Component {
             TeamTasks RPG
           </span>
           <span style={{float: 'right'}}>
-            <Popover
+            { notifications.length > 0 && <Popover
               position={Position.RIGHT_TOP}
               interactionKind={PopoverInteractionKind.HOVER.toString()} >
               <span style={{float: 'right'}}>
@@ -34,7 +34,8 @@ class Gamification extends Component {
                   : <Tag interactive round onClick={this.markAsRead}>...</Tag>
                 }
               </span>
-              <div style={{marginRight: '20px', marginTop: '20px', marginBottom: '20px'}}>
+              <div style={{marginRight: '20px'}}>
+                &nbsp;
                 <ul>
                   {notifications.map((notification) => {
                     return <li key={notification.created_at} style={notification.read ? {} : {fontWeight: 'bold'}}>
@@ -42,8 +43,9 @@ class Gamification extends Component {
                     </li>
                   })}
                 </ul>
+                &nbsp;
               </div>
-            </Popover>
+            </Popover> }
           </span>
         </div>} />
         <MenuItem icon='link' text='Level' label={userLevel ? userLevel.level : '...'} />

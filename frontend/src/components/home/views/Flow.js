@@ -9,16 +9,20 @@ class Flow extends Component {
     loadings: []
   }
 
-  componentDidMount () {
+  loadData = (props) => {
     const actionId = actions.generateActionId()
-    this.props.requestWorkdayList(1, true, actionId)
+    props.requestWorkdayList(1, true, actionId)
     this.setState({loadings: [actionId]})
+  }
+
+  componentDidMount () {
+    this.loadData(this.props)
   }
 
   shouldComponentUpdate (nextProps, nextState) {
     let shouldUpdate = true
     if (JSON.stringify(this.props.filters) !== JSON.stringify(nextProps.filters)) {
-      this.componentDidMount()
+      this.loadData(nextProps)
       shouldUpdate = false
     }
     if (JSON.stringify(this.props.workdays.loadings) !== JSON.stringify(nextProps.workdays.loadings)) {

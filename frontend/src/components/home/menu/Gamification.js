@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Classes, Menu as BPMenu, MenuDivider, MenuItem, MultiSlider, Tag, Intent, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core'
+import { Classes, Menu as BPMenu, MenuDivider, MenuItem, MultiSlider, Button, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core'
 import { connect } from 'react-redux'
 import * as actions from '../../../redux/actions'
+import moment from 'moment'
 
 class Gamification extends Component {
   markAsRead = () => {
@@ -27,19 +28,21 @@ class Gamification extends Component {
           <span style={{float: 'right'}}>
             { notifications.length > 0 && <Popover
               position={Position.RIGHT_TOP}
+              onOpening={() => { this.forceUpdate() }}
               interactionKind={PopoverInteractionKind.HOVER.toString()} >
               <span style={{float: 'right'}}>
-                { nbUnread > 0
-                  ? <Tag interactive round intent={Intent.DANGER} onClick={this.markAsRead}>+{nbUnread}</Tag>
-                  : <Tag interactive round onClick={this.markAsRead}>...</Tag>
-                }
+                <Button
+                  className='badge-notif'
+                  minimal
+                  onClick={this.markAsRead}
+                  data-badge={nbUnread > 0 ? nbUnread : undefined} small icon='notifications' />
               </span>
               <div style={{marginRight: '20px'}}>
                 &nbsp;
                 <ul>
                   {notifications.map((notification) => {
                     return <li key={notification.created_at} style={notification.read ? {} : {fontWeight: 'bold'}}>
-                      {notification.amount} {notification.field} - {notification.message} (2 days ago)
+                      {notification.amount} {notification.field} - {notification.message} ({moment(notification.created_at).fromNow()})
                     </li>
                   })}
                 </ul>

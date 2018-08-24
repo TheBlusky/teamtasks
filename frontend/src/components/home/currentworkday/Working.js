@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Grid, Cell } from 'styled-css-grid'
-import { Button, Card, Elevation, H5, EditableText, Spinner, Tooltip, Position, Classes, Checkbox } from '@blueprintjs/core'
+import { Button, Card, Elevation, H5, EditableText, Spinner, Tooltip, Position, Classes, Checkbox, AnchorButton } from '@blueprintjs/core'
 import * as actions from '../../../redux/actions'
 import { fortuneComments, fortuneTasks } from '../../../fortune'
 
@@ -117,7 +117,7 @@ class Working extends Component {
                     {this.state.tasks[i].label}
                   </div>
                   : <EditableText
-                    multiline minLines={1} maxLines={1}
+                    multiline minLines={1} maxLines={3}
                     disabled={
                       this.state.updateActionsId.filter(({taskId}) => (this.state.tasks[i].id === taskId)).length > 0
                     }
@@ -128,7 +128,7 @@ class Working extends Component {
               </Cell>,
               <Cell key={`${task.id}-comment`}>
                 <EditableText
-                  multiline minLines={1} maxLines={1}
+                  multiline minLines={1} maxLines={3}
                   disabled={
                     this.state.updateActionsId.filter(({taskId}) => (this.state.tasks[i].id === taskId)).length > 0
                   }
@@ -152,7 +152,7 @@ class Working extends Component {
                       className={Classes.TOOLTIP_INDICATOR}
                       content={'Tasks created in planning cannot be removed'}
                       position={Position.LEFT}>
-                      <Button className='bp3-small' disabled icon='trash' />
+                      <AnchorButton className='bp3-small' disabled icon='trash' />
                     </Tooltip>
                     : <Button className='bp3-small' icon='trash' />
                 }
@@ -161,7 +161,7 @@ class Working extends Component {
 
             <Cell>
               <EditableText
-                multiline minLines={1} maxLines={1}
+                multiline minLines={1} maxLines={3}
                 value={this.state.newTaskLabel}
                 placeholder={this.state.fortune.task}
                 disabled={this.state.newTaskActionId}
@@ -171,7 +171,7 @@ class Working extends Component {
             </Cell>
             <Cell>
               <EditableText
-                multiline minLines={1} maxLines={1}
+                multiline minLines={1} maxLines={3}
                 disabled={this.state.newTaskActionId}
                 placeholder={this.state.fortune.comment}
                 value={this.state.newTaskComment}
@@ -202,7 +202,7 @@ class Working extends Component {
               this.state.newTaskDone ||
               this.state.newTaskActionId)
               ? <Tooltip content='You have an unsaved task pending' position={Position.TOP}>
-                <Button disabled>Finish Workday</Button>
+                <AnchorButton disabled>Finish Workday</AnchorButton>
               </Tooltip>
               : <Button onClick={this.props.validateWorking}>Finish Workday</Button>
             }

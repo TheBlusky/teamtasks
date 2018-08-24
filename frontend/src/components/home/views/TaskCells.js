@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Checkbox, Tooltip, Position, Button } from '@blueprintjs/core'
+import { Checkbox, Tooltip, Position, AnchorButton } from '@blueprintjs/core'
 import { Cell } from 'styled-css-grid'
 
 class TaskCells extends Component {
   render () {
-    console.log(this.props.workdayPlannedAt)
     const { task } = this.props
     return ([
       <Cell key={1}>
@@ -13,7 +12,7 @@ class TaskCells extends Component {
           ? <Tooltip
             content={task.comments_planning || (<i>Empty</i>)}
             position={Position.RIGHT}>
-            <Button
+            <AnchorButton
               className='bp3-small'
               disabled={task.comments_planning === null || task.comments_planning === ''}
               icon='log-out' />
@@ -26,7 +25,7 @@ class TaskCells extends Component {
           ? <Tooltip
             content={task.comments_validation || (<i>Empty</i>)}
             position={Position.RIGHT}>
-            <Button
+            <AnchorButton
               disabled={task.comments_validation === null || task.comments_validation === ''}
               className='bp3-small'
               icon='log-in' />

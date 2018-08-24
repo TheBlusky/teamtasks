@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Card, Elevation, H5, Icon, Spinner } from '@blueprintjs/core'
+import { Card, Elevation, H5, Icon, Spinner, Button } from '@blueprintjs/core'
 import WorkdayCard from './WorkdayCard'
 import * as actions from '../../../redux/actions'
 
@@ -39,7 +39,7 @@ class Flow extends Component {
     return (
       <div>
         <Card elevation={Elevation.ONE}>
-          <H5><Icon icon='flows' /> Flow View</H5>
+          <H5><Icon icon='flows' /> Flow View <Button icon='refresh' onClick={() => { this.loadData(this.props) }} /></H5>
         </Card>
         { this.props.workdays.workdays.map((workday) => ([
           <div key={1} style={{'paddingTop': '10px'}} />,

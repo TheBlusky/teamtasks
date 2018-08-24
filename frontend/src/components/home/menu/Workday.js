@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Classes, Menu as BPMenu, MenuDivider, MenuItem, Spinner } from '@blueprintjs/core'
+import { Classes, Menu as BPMenu, MenuDivider, MenuItem, Spinner, Button } from '@blueprintjs/core'
 import connect from 'react-redux/es/connect/connect'
 import moment from 'moment'
 import * as actions from '../../../redux/actions'
@@ -24,7 +24,12 @@ class Workday extends Component {
   render () {
     return (
       <BPMenu className={Classes.ELEVATION_1}>
-        <MenuDivider title='Current workday' />
+        <MenuDivider title={<div>
+          <span style={{float: 'left'}}>Current workday</span>
+          <span style={{float: 'right'}}>
+            <Button loading={this.props.workday.loading} small icon='refresh' onClick={this.props.refresh} />
+          </span>
+        </div>} />
         {
           this.props.workday.loading
             ? <MenuItem text={<Spinner size={15} />} />
@@ -77,6 +82,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         type: actions.PAGE_CHANGE,
         data: {page: EDIT_WORKDAY}
       })
+    },
+    refresh: () => {
+      dispatch({type: actions.API_WORKDAYS_CURRENT_REQUEST})
     }
   }
 }

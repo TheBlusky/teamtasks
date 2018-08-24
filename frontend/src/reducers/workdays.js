@@ -3,7 +3,7 @@ import * as actions from '../redux/actions'
 const workdays = (state = {workdays: [], loadings: [], pageData: undefined}, action) => {
   switch (action.type) {
     case actions.PAGE_CHANGE:
-      if (JSON.stringify(action.data) !== JSON.stringify(state.pageData)) {
+      if (action.forceClean || JSON.stringify(action.data) !== JSON.stringify(state.pageData)) {
         return {...state, workdays: [], pageData: action.data}
       } else {
         return state

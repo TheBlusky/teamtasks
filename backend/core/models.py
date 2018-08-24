@@ -42,7 +42,7 @@ class User(models.Model):
     )
     current_workday = models.ForeignKey(
         "WorkDay",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="+",
         blank=True,
         default=None,

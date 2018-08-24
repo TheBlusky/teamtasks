@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Grid, Cell } from 'styled-css-grid'
-import { Button, Card, Elevation, H5, EditableText, Spinner, Tooltip, Position } from '@blueprintjs/core'
+import { Button, Card, Elevation, H5, EditableText, Spinner, Tooltip, Position, AnchorButton } from '@blueprintjs/core'
 import * as actions from '../../../redux/actions'
 import { fortuneComments, fortuneTasks } from '../../../fortune'
 
@@ -99,7 +99,7 @@ class Planning extends Component {
             {this.state.tasks.map((task, i) => ([
               <Cell key={`${task.id}-label`}>
                 <EditableText
-                  multiline minLines={1} maxLines={1}
+                  multiline minLines={1} maxLines={3}
                   disabled={
                     this.state.updateActionsId.filter(({taskId}) => (this.state.tasks[i].id === taskId)).length > 0
                   }
@@ -109,7 +109,7 @@ class Planning extends Component {
               </Cell>,
               <Cell key={`${task.id}-comment`}>
                 <EditableText
-                  multiline minLines={1} maxLines={1}
+                  multiline minLines={1} maxLines={3}
                   disabled={
                     this.state.updateActionsId.filter(({taskId}) => (this.state.tasks[i].id === taskId)).length > 0
                   }
@@ -127,7 +127,7 @@ class Planning extends Component {
 
             <Cell>
               <EditableText
-                multiline minLines={1} maxLines={1}
+                multiline minLines={1} maxLines={3}
                 placeholder={this.state.fortune.task}
                 value={this.state.newTaskLabel}
                 disabled={this.state.newTaskActionId}
@@ -137,7 +137,7 @@ class Planning extends Component {
             </Cell>
             <Cell>
               <EditableText
-                multiline minLines={1} maxLines={1}
+                multiline minLines={1} maxLines={3}
                 disabled={this.state.newTaskActionId}
                 placeholder={this.state.fortune.comment}
                 value={this.state.newTaskComment}
@@ -162,7 +162,7 @@ class Planning extends Component {
               this.state.updateActionsId.length > 0 ||
               this.state.newTaskActionId)
               ? <Tooltip content='You have an unsaved task pending' position={Position.TOP}>
-                <Button disabled>Validate planning</Button>
+                <AnchorButton disabled>Validate planning</AnchorButton>
               </Tooltip>
               : <Button onClick={this.props.validatePlanning}>Validate planning</Button>
             }

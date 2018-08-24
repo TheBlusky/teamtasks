@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Card, Elevation, H5, Icon, Spinner, Tabs, Tab, Tooltip, Position, Button } from '@blueprintjs/core'
+import { Card, Elevation, H5, Icon, Spinner, Tabs, Tab, Tooltip, Position, AnchorButton, Button } from '@blueprintjs/core'
 import WorkdayCard from './WorkdayCard'
 import * as actions from '../../../redux/actions'
 
@@ -55,7 +55,7 @@ class Daily extends Component {
     return (
       <div>
         <Card elevation={Elevation.ONE}>
-          <H5><Icon icon='flows' /> Daily View</H5>
+          <H5><Icon icon='flows' /> Daily View <Button icon='refresh' onClick={() => { this.loadData(this.props) }} /></H5>
         </Card>
         <div style={{'paddingTop': '10px'}} />
         <Card elevation={Elevation.ONE}>
@@ -69,7 +69,7 @@ class Daily extends Component {
                 title={
                   <div>
                     <Tooltip content={this.getWordayState(workday)} position={Position.TOP}>
-                      <Button disabled icon={this.getWordayIcon(workday)} size={40} />
+                      <AnchorButton style={{display: 'inline-flex'}} disabled icon={this.getWordayIcon(workday)} size={10} />
                     </Tooltip>
                     &nbsp;
                     {user.django_user.username}

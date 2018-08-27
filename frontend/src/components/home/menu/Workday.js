@@ -72,6 +72,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     requestWorkdayCreate: (day) => {
+      console.log('Hotdebug #1')
       dispatch({
         type: actions.API_WORKDAYS_CREATE_REQUEST,
         data: {day}

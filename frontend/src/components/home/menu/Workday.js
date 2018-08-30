@@ -51,12 +51,12 @@ class Workday extends Component {
                       onClick={() => this.createWorkday(TOMORROW)} />
                   </MenuItem>
               ]
-              : <MenuItem key={8} icon='edit' text='Start planning'>
+              : [
                 <MenuItem key={9} icon='play' text='Tasks for today'
-                  onClick={() => this.createWorkday(TODAY)} />
+                  onClick={() => this.createWorkday(TODAY)} />,
                 <MenuItem key={10} icon='fast-forward' text='Tasks for tomorrow'
                   onClick={() => this.createWorkday(TOMORROW)} />
-              </MenuItem>
+              ]
         }
       </BPMenu>
     )

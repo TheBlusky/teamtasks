@@ -18,7 +18,20 @@ services:
       - TZ=Europe/Paris
     links:
       - postgres
+    depends_on:
+      - cron
     command: gunicorn teamtasks.wsgi -w 4 --preload --log-file - --access-logfile - --bind 0.0.0.0:8000
+
+  cron:
+    image: theblusky/teamtasks:backend
+    build:
+      context: ..
+      dockerfile: Dockerfile-backend
+    environment:
+      - TZ=Europe/Paris
+    links:
+      - postgres
+    command: sh cron.sh
 
   postgres:
     image: postgres:latest

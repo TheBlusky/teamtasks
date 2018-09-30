@@ -1,3 +1,4 @@
+import urllib
 from datetime import datetime, date
 from django.utils import timezone
 from rest_framework import status
@@ -236,9 +237,9 @@ class GamificationTestCase(TestCase):
     def test08_last_seen(self):
         client = GamificationTestCase.client
         notifications = client.get("/gamification/").json()["notifications"]
-        last_seen = notifications[3]["created_at"].replace("T", " ")[0:-6]
+        last_seen = notifications[3]["created_at"].replace("T", " ")
         self.assertEqual(len([n for n in notifications if not n["read"]]), 10)
-        notifications = client.get(f"/gamification/?last_seen={last_seen}").json()[
-            "notifications"
-        ]
+        notifications = client.get(
+            f"/gamification/?{urllib.parse.urlencode({'last_seen': last_seen})}"
+        ).json()["notifications"]
         self.assertEqual(len([n for n in notifications if not n["read"]]), 3)

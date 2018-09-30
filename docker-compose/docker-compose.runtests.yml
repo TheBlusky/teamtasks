@@ -11,7 +11,7 @@ services:
       - postgres
       - ldap
     working_dir: /tmp_backend/
-    command: ./runtests.sh
+    command: sh runtests.sh
 
   ldap:
     image: osixia/openldap:latest

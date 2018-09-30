@@ -17,8 +17,6 @@ from teamtasks import configuration
 
 class Team(models.Model):
     name = models.CharField(max_length=32)
-    slack_url = models.CharField(max_length=128, default="")
-    slack_channel_public = models.CharField(max_length=128, default="")
 
     @classmethod
     def create_team(cls, team_name):
@@ -51,7 +49,6 @@ class User(models.Model):
     team = models.ForeignKey(
         "Team", on_delete=models.CASCADE, blank=True, default=None, null=True
     )
-    slack_name = models.CharField(max_length=32, default="")
     is_admin = models.BooleanField(default=False)
 
     @classmethod

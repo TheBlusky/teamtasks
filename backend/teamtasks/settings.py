@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     "core",
     "api",
     "gamification",
+    "slack",
 ]
 
 MIDDLEWARE = [

@@ -3,6 +3,7 @@ from django.contrib.postgres.fields import JSONField
 import requests
 
 from core.models import WorkDay
+from gamification.utils import xp_needed_for_level_up, hp_max_with_level
 
 
 class TeamSlack(models.Model):
@@ -26,14 +27,14 @@ class TeamSlack(models.Model):
             return
         user = workday.user
         slack_username = (
-            f"<@{self.users[user.id]}>"
+            f"<{self.users[user.id]}>"
             if workday.user_id in self.users
             else user.django_user.username
         )
         if workday.validated_at:
-            message = f"{slack_username} just planned a workday :clap::clap::clap:"
+            message = f":clap::clap::clap: {slack_username} finished a workday :clap::clap::clap:"
         elif workday.planned_at:
-            message = f"{slack_username} just finished a workday :clap::clap::clap:"
+            message = f":clap::clap::clap: {slack_username} planned a workday :clap::clap::clap:"
         else:
             return
         userlevel = user.user_level
@@ -44,9 +45,23 @@ class TeamSlack(models.Model):
                     "author_name": "TeamTasks",
                     "color": "good",
                     "fields": [
-                        {"title": "Level", "value": userlevel.level, "short": True},
-                        {"title": "HP", "value": userlevel.hp, "short": True},
-                        {"title": "XP", "value": userlevel.xp, "short": True},
+                        {
+                            "title": "Level",
+                            "value": f"{userlevel.level} "
+                            f"({userlevel.xp}/{xp_needed_for_level_up(userlevel.level)} :eight_pointed_black_star:) "
+                            f"({userlevel.hp}/{hp_max_with_level(userlevel.level)} :heart_decoration:)",
+                            "short": False,
+                        },
+                        {
+                            "title": "Tasks",
+                            "value": "\n".join(
+                                [
+                                    f"{':spiral_note_pad:' if not workday.validated_at else (':ok_hand:' if task.done else ':skull_and_crossbones:')} {task.label}"
+                                    for task in workday.task_set.all()
+                                ]
+                            ),
+                            "short": False,
+                        },
                     ],
                 }
             ],

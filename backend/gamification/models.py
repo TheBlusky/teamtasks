@@ -1,7 +1,10 @@
+import requests
 from django.utils import timezone
-from datetime import datetime, time
+import datetime
 from django.db import models
+from rest_framework.exceptions import NotFound
 
+from core.exceptions import TooEarly, AlreadyPinged, CantSelfPing
 from core.models import WorkDay
 from gamification.utils import xp_needed_for_level_up, hp_max_with_level
 
@@ -47,7 +50,9 @@ class UserLevel(models.Model):
         return Notification.create_notification(self, field, amount, message)
 
     def handle_workday_planification(self, workday: WorkDay):
-        workday_day = timezone.make_aware(datetime.combine(workday.day, time(0, 0, 0)))
+        workday_day = timezone.make_aware(
+            datetime.datetime.combine(workday.day, datetime.time(0, 0, 0))
+        )
         delta_time = workday.planned_at - workday_day
         delta_time_minutes = int(delta_time.total_seconds() / 60)
 
@@ -91,7 +96,9 @@ class UserLevel(models.Model):
             self.add_xp(min(nb_tasks, 5), f"You planned {nb_tasks} task(s).")
 
     def handle_workday_validation(self, workday):
-        workday_day = timezone.make_aware(datetime.combine(workday.day, time(0, 0, 0)))
+        workday_day = timezone.make_aware(
+            datetime.datetime.combine(workday.day, datetime.time(0, 0, 0))
+        )
         delta_time = workday.validated_at - workday_day
         delta_time_minutes = int(delta_time.total_seconds() / 60)
 
@@ -174,3 +181,64 @@ class Notification(models.Model):
         notification.amount = amount
         notification.message = message
         notification.save()
+
+
+class PingHistory(models.Model):
+    pinger = models.ForeignKey("core.User", on_delete=models.CASCADE, related_name="+")
+    pinged = models.ForeignKey("core.User", on_delete=models.CASCADE, related_name="+")
+    day = models.DateField(auto_now_add=True)
+
+    @classmethod
+    def ping(cls, current_user, pinged_user):
+        if current_user.team_id != pinged_user.team_id:
+            raise NotFound
+        workday = pinged_user.current_workday
+        if datetime.datetime.now().hour < 10:
+            raise TooEarly
+        if current_user.id == pinged_user.id:
+            raise CantSelfPing
+        if workday is None:
+            # No workday, ping is ok !
+            pass
+        elif workday.day != datetime.date.today():
+            # Workday is not today, ping is ok !
+            pass
+        elif workday.planned_at is None:
+            # Workday is not planned yet, ping is ok !
+            pass
+        elif not PingHistory.objects.filter(
+            pinger=current_user, pinged=pinged_user, day=date.today()
+        ).exists():
+            # Workday is not pinged yet, ping is ok !
+            pass
+        else:
+            # Workday is already pinged, do not ping
+            raise AlreadyPinged
+        ping_history = PingHistory()
+        ping_history.pinged = pinged_user
+        ping_history.pinger = current_user
+        ping_history.save()
+        # Todo: ping him on slack !
+        team_slack = pinged_user.team.team_slack
+        message = (
+            f"{pinged_user.django_user.username}: You have not planned workday "
+            "for today but did not validate it yet. Hurry up or "
+            "you'll lose HP ! 😱😱😱}"
+        )
+        data = {
+            "text": message,
+            "username": "Teambot by TeamTasks",
+            "channel": team_slack.channel,
+        }
+        try:
+            requests.post(team_slack.url, json=data)
+        except requests.exceptions.RequestException:
+            print("Error during request")
+        return ping_history
+
+    def reward(self):
+        user_level = UserLevel.objects.get(teamtasks_user=self.pinger)
+        user_level.add_xp(
+            5,
+            f"{self.pinger.django_user.username} validated a workday you pinged him for",
+        )

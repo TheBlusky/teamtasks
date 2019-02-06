@@ -1,9 +1,15 @@
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from api.utils import IsTeamTasksMember
 from core.models import User
-from gamification.serializers import UserLevelSerializer, Notification
+from gamification.models import PingHistory
+from gamification.serializers import (
+    UserLevelSerializer,
+    Notification,
+    PingUserSerializer,
+)
 
 
 @api_view(http_method_names=["GET"])
@@ -24,3 +30,16 @@ def get_gamification_status(request):
             "notifications": Notification(notifications, many=True).data,
         }
     )
+
+
+@api_view(http_method_names=["POST"])
+@permission_classes([IsTeamTasksMember])
+def ping_user(request):
+    serialized = PingUserSerializer(data=request.data)
+    serialized.is_valid(raise_exception=True)
+    current_user = User.objects.get(django_user=request.user)
+    pinged_user = get_object_or_404(
+        User, django_user__username=serialized.validated_data["username"]
+    )
+    PingHistory.ping(current_user, pinged_user)
+    return Response({"status": "ok"})

@@ -22,7 +22,7 @@ class Command(BaseCommand):
             ):
                 user_id = str(workday.user_id)
                 users_notify.append(
-                    f"<{slack_users[user_id]}>"
+                    f"<@{slack_users[user_id]}>"
                     if user_id in slack_users
                     else workday.user.django_user.username
                 )

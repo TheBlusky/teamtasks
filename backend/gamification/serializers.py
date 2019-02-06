@@ -23,3 +23,7 @@ class Notification(serializers.Serializer):
     message = serializers.CharField()
     amount = serializers.IntegerField()
     read = serializers.BooleanField()
+
+
+class PingUserSerializer(serializers.Serializer):
+    username = serializers.CharField()

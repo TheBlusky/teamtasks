@@ -78,3 +78,21 @@ class NotInCurrentWorkday(APIException):
     status_code = status.HTTP_409_CONFLICT
     default_code = "not_in_current_workday"
     default_detail = "not_in_current_workday"
+
+
+class AlreadyPinged(APIException):
+    status_code = status.HTTP_409_CONFLICT
+    default_code = "already_pinged"
+    default_detail = "already_pinged"
+
+
+class TooEarly(APIException):
+    status_code = status.HTTP_409_CONFLICT
+    default_code = "too_early"
+    default_detail = "too_early"
+
+
+class CantSelfPing(APIException):
+    status_code = status.HTTP_409_CONFLICT
+    default_code = "cant_self_ping"
+    default_detail = "cant_self_ping"

@@ -1,12 +1,38 @@
 import urllib
-from datetime import datetime, date
+import datetime
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient
-from unittest import TestCase
-
+from unittest import TestCase, mock
 from core.models import User
 from gamification.utils import xp_needed_for_level_up
+
+real_datetime_class = datetime.datetime
+
+
+def mock_datetime(target, datetime_module):
+    class DatetimeSubclassMeta(type):
+        @classmethod
+        def __instancecheck__(mcs, obj):
+            return isinstance(obj, real_datetime_class)
+
+    class BaseMockedDatetime(real_datetime_class):
+        @classmethod
+        def now(cls, tz=None):
+            return target.replace(tzinfo=tz)
+
+        @classmethod
+        def utcnow(cls):
+            return target
+
+        @classmethod
+        def today(cls):
+            return target
+
+    MockedDatetime = DatetimeSubclassMeta(
+        "datetime.datetime", (BaseMockedDatetime,), {}
+    )
+    return mock.patch.object(datetime_module, "datetime", MockedDatetime)
 
 
 class GamificationTestCase(TestCase):
@@ -56,9 +82,11 @@ class GamificationTestCase(TestCase):
         user = User.objects.get(django_user__username="game_01")
 
         # 01/01 09:00: Create a workday for 01/01
-        workday = user.create_workday(date(2018, 1, 1))
+        workday = user.create_workday(datetime.date(2018, 1, 1))
         # 01/01 09:00: Validate it
-        workday.validate_planning(timezone.make_aware(datetime(2018, 1, 1, 9, 0, 0)))
+        workday.validate_planning(
+            timezone.make_aware(datetime.datetime(2018, 1, 1, 9, 0, 0))
+        )
         user_level = GamificationTestCase.client.get("/gamification/").json()[
             "user_level"
         ]
@@ -69,7 +97,9 @@ class GamificationTestCase(TestCase):
         self.assertEqual(user_level["xp_required"], 15)
 
         # 01/01 18:00: Finish it
-        workday.validate_working(timezone.make_aware(datetime(2018, 1, 1, 18, 0, 0)))
+        workday.validate_working(
+            timezone.make_aware(datetime.datetime(2018, 1, 1, 18, 0, 0))
+        )
         user_level = GamificationTestCase.client.get("/gamification/").json()[
             "user_level"
         ]
@@ -81,9 +111,11 @@ class GamificationTestCase(TestCase):
         self.assertEqual(user_level["xp_required"], 15)
 
         # 01/01 18:00: Create a workday for 02/01
-        workday = user.create_workday(date(2018, 1, 2))
+        workday = user.create_workday(datetime.date(2018, 1, 2))
         # 01/01 18:00: Validate it
-        workday.validate_planning(timezone.make_aware(datetime(2018, 1, 1, 18, 0, 0)))
+        workday.validate_planning(
+            timezone.make_aware(datetime.datetime(2018, 1, 1, 18, 0, 0))
+        )
         user_level = GamificationTestCase.client.get("/gamification/").json()[
             "user_level"
         ]
@@ -94,7 +126,9 @@ class GamificationTestCase(TestCase):
         self.assertEqual(user_level["xp_required"], 20)
 
         # 01/03 9:00: Finish it
-        workday.validate_working(timezone.make_aware(datetime(2018, 1, 3, 9, 0, 0)))
+        workday.validate_working(
+            timezone.make_aware(datetime.datetime(2018, 1, 3, 9, 0, 0))
+        )
         user.clean_workday()
         user_level = GamificationTestCase.client.get("/gamification/").json()[
             "user_level"
@@ -106,9 +140,11 @@ class GamificationTestCase(TestCase):
         self.assertEqual(user_level["xp_required"], 20)
 
         # 01/03 9:00: Create a workday for 04/01
-        workday = user.create_workday(date(2018, 1, 4))
+        workday = user.create_workday(datetime.date(2018, 1, 4))
         # 01/03 09:00: Validate it
-        workday.validate_planning(timezone.make_aware(datetime(2018, 1, 3, 9, 0, 0)))
+        workday.validate_planning(
+            timezone.make_aware(datetime.datetime(2018, 1, 3, 9, 0, 0))
+        )
         user_level = GamificationTestCase.client.get("/gamification/").json()[
             "user_level"
         ]
@@ -119,7 +155,9 @@ class GamificationTestCase(TestCase):
         self.assertEqual(user_level["xp_required"], 20)
 
         # 01/03 9:00: Finish it
-        workday.validate_working(timezone.make_aware(datetime(2018, 1, 3, 9, 0, 0)))
+        workday.validate_working(
+            timezone.make_aware(datetime.datetime(2018, 1, 3, 9, 0, 0))
+        )
         user.clean_workday()
         user_level = GamificationTestCase.client.get("/gamification/").json()[
             "user_level"
@@ -131,9 +169,11 @@ class GamificationTestCase(TestCase):
         self.assertEqual(user_level["xp_required"], 20)
 
         # 01/04 21:00: Create a workday for 05/01
-        workday = user.create_workday(date(2018, 1, 5))
+        workday = user.create_workday(datetime.date(2018, 1, 5))
         # 01/04 21:00: Validate it
-        workday.validate_planning(timezone.make_aware(datetime(2018, 1, 4, 21, 0, 0)))
+        workday.validate_planning(
+            timezone.make_aware(datetime.datetime(2018, 1, 4, 21, 0, 0))
+        )
         user_level = GamificationTestCase.client.get("/gamification/").json()[
             "user_level"
         ]
@@ -144,7 +184,9 @@ class GamificationTestCase(TestCase):
         self.assertEqual(user_level["xp_required"], 20)
 
         # 01/06 7:00: Finish it
-        workday.validate_working(timezone.make_aware(datetime(2018, 1, 6, 7, 0, 0)))
+        workday.validate_working(
+            timezone.make_aware(datetime.datetime(2018, 1, 6, 7, 0, 0))
+        )
         user.clean_workday()
         user_level = GamificationTestCase.client.get("/gamification/").json()[
             "user_level"
@@ -158,10 +200,12 @@ class GamificationTestCase(TestCase):
     def test06_tasks_xp(self):
         user = User.objects.get(django_user__username="game_01")
 
-        workday = user.create_workday(date(2018, 2, 2))
+        workday = user.create_workday(datetime.date(2018, 2, 2))
         task1 = user.create_task({"label": "task1", "comments_planning": ""})
         user.create_task({"label": "task2", "comments_planning": ""})
-        workday.validate_planning(timezone.make_aware(datetime(2018, 2, 2, 5, 0, 0)))
+        workday.validate_planning(
+            timezone.make_aware(datetime.datetime(2018, 2, 2, 5, 0, 0))
+        )
         user_level = GamificationTestCase.client.get("/gamification/").json()[
             "user_level"
         ]
@@ -176,7 +220,9 @@ class GamificationTestCase(TestCase):
         user.create_task(
             {"label": "task3", "comments_validation": "", "done": True, "progress": -1}
         )
-        workday.validate_working(timezone.make_aware(datetime(2018, 2, 2, 21, 0, 0)))
+        workday.validate_working(
+            timezone.make_aware(datetime.datetime(2018, 2, 2, 21, 0, 0))
+        )
         user.clean_workday()
         user_level = GamificationTestCase.client.get("/gamification/").json()[
             "user_level"
@@ -190,8 +236,10 @@ class GamificationTestCase(TestCase):
     def test07_loose_hp(self):
         user = User.objects.get(django_user__username="game_01")
 
-        workday = user.create_workday(date(2018, 3, 1))
-        workday.validate_planning(timezone.make_aware(datetime(2018, 3, 1, 13, 1, 1)))
+        workday = user.create_workday(datetime.date(2018, 3, 1))
+        workday.validate_planning(
+            timezone.make_aware(datetime.datetime(2018, 3, 1, 13, 1, 1))
+        )
         user_level = GamificationTestCase.client.get("/gamification/").json()[
             "user_level"
         ]
@@ -201,7 +249,9 @@ class GamificationTestCase(TestCase):
         self.assertEqual(user_level["xp"], 6)
         self.assertEqual(user_level["xp_required"], 25)
 
-        workday.validate_working(timezone.make_aware(datetime(2018, 3, 2, 15, 1, 1)))
+        workday.validate_working(
+            timezone.make_aware(datetime.datetime(2018, 3, 2, 15, 1, 1))
+        )
         user.clean_workday()
         user_level = GamificationTestCase.client.get("/gamification/").json()[
             "user_level"
@@ -212,8 +262,10 @@ class GamificationTestCase(TestCase):
         self.assertEqual(user_level["xp"], 6)
         self.assertEqual(user_level["xp_required"], 25)
 
-        workday = user.create_workday(date(2018, 3, 2))
-        workday.validate_planning(timezone.make_aware(datetime(2018, 3, 5, 13, 1, 1)))
+        workday = user.create_workday(datetime.date(2018, 3, 2))
+        workday.validate_planning(
+            timezone.make_aware(datetime.datetime(2018, 3, 5, 13, 1, 1))
+        )
         user_level = GamificationTestCase.client.get("/gamification/").json()[
             "user_level"
         ]
@@ -223,7 +275,9 @@ class GamificationTestCase(TestCase):
         self.assertEqual(user_level["xp"], 6)
         self.assertEqual(user_level["xp_required"], 25)
 
-        workday.validate_working(timezone.make_aware(datetime(2018, 3, 5, 15, 1, 1)))
+        workday.validate_working(
+            timezone.make_aware(datetime.datetime(2018, 3, 5, 15, 1, 1))
+        )
         user.clean_workday()
         user_level = GamificationTestCase.client.get("/gamification/").json()[
             "user_level"
@@ -243,3 +297,73 @@ class GamificationTestCase(TestCase):
             f"/gamification/?{urllib.parse.urlencode({'last_seen': last_seen})}"
         ).json()["notifications"]
         self.assertEqual(len([n for n in notifications if not n["read"]]), 3)
+
+    def test09_ping(self):
+        client1 = APIClient()
+        response = client1.post(
+            "/api/users/register/",
+            data={
+                "username": "ping_01",
+                "email": "ping_01@test.com",
+                "password": "password01",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = client1.post(
+            "/api/users/login/", data={"username": "ping_01", "password": "password01"}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = client1.post("/api/teams/", data={"team_name": "ping_01"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        client2 = APIClient()
+        response = client2.post(
+            "/api/users/register/",
+            data={
+                "username": "ping_02",
+                "email": "ping_02@test.com",
+                "password": "password01",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = client1.post("/api/teams/add_user/", data={"username": "ping_02"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = client2.post(
+            "/api/users/login/", data={"username": "ping_02", "password": "password01"}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        client3 = APIClient()
+        response = client3.post(
+            "/api/users/register/",
+            data={
+                "username": "ping_03",
+                "email": "ping_03@test.com",
+                "password": "password01",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = client3.post(
+            "/api/users/login/", data={"username": "ping_03", "password": "password01"}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = client3.post("/api/teams/", data={"team_name": "ping_03"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = client3.post(
+            "/gamification/ping_user/", data={"username": "ping_01"}
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        response = client1.post(
+            "/gamification/ping_user/", data={"username": "ping_01"}
+        )
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.json()["detail"], "cant_self_ping")
+
+        with mock_datetime(datetime.datetime(2014, 12, 31, 5, 0), datetime):
+            response = client2.post(
+                "/gamification/ping_user/", data={"username": "ping_01"}
+            )
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.json()["detail"], "too_early")

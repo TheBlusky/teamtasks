@@ -27,7 +27,7 @@ class TeamSlack(models.Model):
             return
         user = workday.user
         slack_username = (
-            f"<{self.users[user.id]}>"
+            f"<@{self.users[user.id]}>"
             if workday.user_id in self.users
             else user.django_user.username
         )

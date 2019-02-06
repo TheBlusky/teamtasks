@@ -361,9 +361,23 @@ class GamificationTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
         self.assertEqual(response.json()["detail"], "cant_self_ping")
 
-        with mock_datetime(datetime.datetime(2014, 12, 31, 5, 0), datetime):
+        now = datetime.datetime.now()
+
+        with mock_datetime(datetime.datetime(now.year, now.month, now.day, 5, 0), datetime):
             response = client2.post(
                 "/gamification/ping_user/", data={"username": "ping_01"}
             )
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
         self.assertEqual(response.json()["detail"], "too_early")
+
+        with mock_datetime(datetime.datetime(now.year, now.month, now.day, 11, 0), datetime):
+            response = client2.post(
+                "/gamification/ping_user/", data={"username": "ping_01"}
+            )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        with mock_datetime(datetime.datetime(now.year, now.month, now.day, 11, 0), datetime):
+            response = client2.post(
+                "/gamification/ping_user/", data={"username": "ping_01"}
+            )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

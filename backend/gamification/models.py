@@ -207,7 +207,7 @@ class PingHistory(models.Model):
             # Workday is not planned yet, ping is ok !
             pass
         elif not PingHistory.objects.filter(
-            pinger=current_user, pinged=pinged_user, day=date.today()
+            pinger=current_user, pinged=pinged_user, day=datetime.date.today()
         ).exists():
             # Workday is not pinged yet, ping is ok !
             pass
@@ -218,22 +218,6 @@ class PingHistory(models.Model):
         ping_history.pinged = pinged_user
         ping_history.pinger = current_user
         ping_history.save()
-        # Todo: ping him on slack !
-        team_slack = pinged_user.team.team_slack
-        message = (
-            f"{pinged_user.django_user.username}: You have not planned workday "
-            "for today but did not validate it yet. Hurry up or "
-            "you'll lose HP ! 😱😱😱}"
-        )
-        data = {
-            "text": message,
-            "username": "Teambot by TeamTasks",
-            "channel": team_slack.channel,
-        }
-        try:
-            requests.post(team_slack.url, json=data)
-        except requests.exceptions.RequestException:
-            print("Error during request")
         return ping_history
 
     def reward(self):

@@ -3,6 +3,7 @@ from django.contrib.postgres.fields import JSONField
 import requests
 
 from core.models import WorkDay
+from gamification.models import PingHistory
 from gamification.utils import xp_needed_for_level_up, hp_max_with_level
 
 
@@ -21,6 +22,28 @@ class TeamSlack(models.Model):
         team_slack.team = team
         team_slack.save()
         return team_slack
+
+    def handle_pinghistory_saved(self, ping_history: PingHistory):
+        du = ping_history.pinged.django_user
+        slack_username = (
+            f"<@{self.users[du.id]}>"
+            if du.id in self.users
+            else du.username
+        )
+        message = (
+            f"{slack_username}: You have not planned workday "
+            "for today but did not validate it yet. Hurry up or "
+            "you'll lose HP ! 😱😱😱}"
+        )
+        data = {
+            "text": message,
+            "username": "Teambot by TeamTasks",
+            "channel": self.channel,
+        }
+        try:
+            requests.post(self.url, json=data)
+        except requests.exceptions.RequestException:
+            pass
 
     def handle_workday_saved(self, workday: WorkDay):
         if not self.activated:

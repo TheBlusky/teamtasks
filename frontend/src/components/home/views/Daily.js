@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Card, Elevation, H5, Icon, Spinner, Tabs, Tab, Tooltip, Position, AnchorButton, Button } from '@blueprintjs/core'
 import WorkdayCard from './WorkdayCard'
 import * as actions from '../../../redux/actions'
+import moment from 'moment'
 
 class Daily extends Component {
   state = {
@@ -73,6 +74,17 @@ class Daily extends Component {
                     </Tooltip>
                     &nbsp;
                     {user.django_user.username}
+                    &nbsp;
+                    {
+                      this.props.ping.users.indexOf(user.django_user.username) > -1 &&
+                      <Tooltip content="Ping this user" position={Position.TOP}>
+                        <AnchorButton
+                          style={{display: 'inline-flex'}}
+                          icon="chat"
+                          onClick={() => {this.props.sendPing(user.django_user.username)}}
+                          size={10} />
+                      </Tooltip>
+                    }
                   </div>
                 }
                 disabled={filteredWorkdays.length === 0}
@@ -90,13 +102,32 @@ class Daily extends Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     users: state.teamtasksStore.users.users,
-    workdays: state.teamtasksStore.workdays
+    workdays: state.teamtasksStore.workdays,
+    ping: state.teamtasksStore.ping
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    sendPing: (username) => {
+        dispatch({
+          type: actions.API_GAMIFICATION_SENDPING_REQUEST,
+          data: {username}
+        })
+    },
     requestWorkdayList: (page, resetState, actionId) => {
+      if(ownProps.filters.days===moment().format('YYYY-MM-DD'))  {
+        // Displayed is today, look for pingable
+        dispatch({
+          type: actions.API_GAMIFICATION_GETPING_REQUEST,
+        })
+      }
+      else {
+        // Displayed is not today, reset pingable
+        dispatch({
+          type: actions.API_GAMIFICATION_GETPING_RESET,
+        })
+      }
       dispatch({
         type: actions.API_WORKDAYS_LIST_REQUEST,
         data: {page, ...ownProps.filters},

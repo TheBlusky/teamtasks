@@ -7,18 +7,14 @@ function * apiWorkdaysCreate (action) {
   const {actionId} = action
   try {
     const response = yield fetch('/api/workdays/', {}, 'POST', action.data)
-    console.log('Hotdebug #2.2')
     const responseJson = yield response.json()
     if (response.ok) {
-      console.log('Hotdebug #2.3')
       yield put({type: actions.API_WORKDAYS_CREATE_SUCCESS, data: responseJson, actionId})
     } else {
-      console.log('Hotdebug #2.4')
       yield put({type: actions.API_WORKDAYS_CREATE_FAILURE, data: responseJson, actionId})
       yield put({type: actions.API_WORKDAYS_CURRENT_REQUEST})
     }
   } catch (error) {
-    console.log('Hotdebug #2.5')
     console.log(error)
     yield put({type: actions.API_WORKDAYS_CREATE_FAILURE, actionId})
     yield put({type: actions.API_WORKDAYS_CURRENT_REQUEST})

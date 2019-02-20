@@ -7,6 +7,7 @@ import currentWorkday from './currentWorkday'
 import displayedPage from './displayedPage'
 import workdays from './workdays'
 import gamification from './gamification'
+import ping from './ping'
 
 const reducers = combineReducers({
   currentUser,
@@ -16,6 +17,7 @@ const reducers = combineReducers({
   workdays,
   displayedPage,
   gamification,
+  ping,
   errors
 })
 

@@ -1,5 +1,5 @@
 # AUTO-GENERATED FILE - DO NOT EDIT!! Use ldapmodify.
-# CRC32 6cea72bd
+# CRC32 2eb58d9e
 dn: olcDatabase={1}mdb
 objectClass: olcDatabaseConfig
 objectClass: olcMdbConfig
@@ -8,7 +8,6 @@ olcDbDirectory: /var/lib/ldap
 olcSuffix: dc=teamtasks,dc=fake
 olcLastMod: TRUE
 olcRootDN: cn=admin,dc=teamtasks,dc=fake
-olcRootPW:: e1NTSEF9U2xwb3dVbDY3Y0RuYU9ObjVzNXhUcDd5czdZNWlEUks=
 olcDbCheckpoint: 512 30
 olcDbMaxSize: 1073741824
 structuralObjectClass: olcMdbConfig
@@ -25,6 +24,7 @@ olcDbIndex: memberOf eq
 olcDbIndex: entryCSN eq
 olcDbIndex: entryUUID eq
 olcDbIndex: objectClass eq
-entryCSN: 20180812072606.963191Z#000000#000#000000
+olcRootPW:: e1NTSEF9eUlxS3dUM2g5dHptR21GMWR3ZS9CaWFJN1U3V0t5NE4=
+entryCSN: 20190220073442.788940Z#000000#000#000000
 modifiersName: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
-modifyTimestamp: 20180812072606Z
+modifyTimestamp: 20190220073442Z

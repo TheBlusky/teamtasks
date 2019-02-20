@@ -14,7 +14,7 @@ services:
     command: sh runtests.sh
 
   ldap:
-    image: osixia/openldap:latest
+    image: osixia/openldap:1.2.2
     volumes:
       - ../misc/ldap_tests/data:/var/lib/ldap
       - ../misc/ldap_tests/config:/etc/ldap/slapd.d

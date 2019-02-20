@@ -4,7 +4,7 @@ import datetime
 from django.db import models
 from rest_framework.exceptions import NotFound
 
-from core.exceptions import TooEarly, AlreadyPinged, CantSelfPing
+from core.exceptions import TooEarly, AlreadyPinged, CantSelfPing, AlreadyPlanned
 from core.models import WorkDay
 from gamification.utils import xp_needed_for_level_up, hp_max_with_level
 
@@ -192,27 +192,17 @@ class PingHistory(models.Model):
     def ping(cls, current_user, pinged_user):
         if current_user.team_id != pinged_user.team_id:
             raise NotFound
-        workday = pinged_user.current_workday
         if datetime.datetime.now().hour < 10:
             raise TooEarly
         if current_user.id == pinged_user.id:
             raise CantSelfPing
-        if workday is None:
-            # No workday, ping is ok !
-            pass
-        elif workday.day != datetime.date.today():
-            # Workday is not today, ping is ok !
-            pass
-        elif workday.planned_at is None:
-            # Workday is not planned yet, ping is ok !
-            pass
-        elif not PingHistory.objects.filter(
+        if pinged_user.workday_set.filter(
+            day=datetime.date.today(), planned_at__isnull=False
+        ).exists():
+            raise AlreadyPlanned
+        if PingHistory.objects.filter(
             pinger=current_user, pinged=pinged_user, day=datetime.date.today()
         ).exists():
-            # Workday is not pinged yet, ping is ok !
-            pass
-        else:
-            # Workday is already pinged, do not ping
             raise AlreadyPinged
         ping_history = PingHistory()
         ping_history.pinged = pinged_user
@@ -224,5 +214,5 @@ class PingHistory(models.Model):
         user_level = UserLevel.objects.get(teamtasks_user=self.pinger)
         user_level.add_xp(
             5,
-            f"{self.pinger.django_user.username} validated a workday you pinged him for",
+            f"{self.pinged.django_user.username} validated a workday you pinged him for",
         )

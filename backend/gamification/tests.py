@@ -389,4 +389,34 @@ class GamificationTestCase(TestCase):
             response = client2.post(
                 "/gamification/ping_user/", data={"username": "ping_01"}
             )
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.json()["detail"], "already_pinged")
+
+        # No rewards yet
+        response = client2.get("/gamification/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()["notifications"]), 0)
+
+        with mock_datetime(
+            datetime.datetime(now.year, now.month, now.day, 12, 0), datetime
+        ):
+            response = client1.post(
+                "/api/workdays/", data={"day": str(datetime.date.today())}
+            )
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            response = client1.post("/api/workdays/validate_planning/")
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Rewarded
+        response = client2.get("/gamification/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()["notifications"]), 1)
+
+        with mock_datetime(
+            datetime.datetime(now.year, now.month, now.day, 13, 0), datetime
+        ):
+            response = client2.post(
+                "/gamification/ping_user/", data={"username": "ping_01"}
+            )
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.json()["detail"], "already_planned")

@@ -96,3 +96,9 @@ class CantSelfPing(APIException):
     status_code = status.HTTP_409_CONFLICT
     default_code = "cant_self_ping"
     default_detail = "cant_self_ping"
+
+
+class AlreadyPlanned(APIException):
+    status_code = status.HTTP_409_CONFLICT
+    default_code = "already_planned"
+    default_detail = "already_planned"

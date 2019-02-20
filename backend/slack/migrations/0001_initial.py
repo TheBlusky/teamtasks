@@ -5,7 +5,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
-def forwards_func(apps, schema_editor):
+def forwards_func(apps, schema_editor):  # pragma: no cover
     TeamSlack = apps.get_model("slack", "TeamSlack")
     Team = apps.get_model("core", "Team")
     db_alias = schema_editor.connection.alias
@@ -14,7 +14,7 @@ def forwards_func(apps, schema_editor):
     )
 
 
-def reverse_func(apps, schema_editor):
+def reverse_func(apps, schema_editor):  # pragma: no cover
     TeamSlack = apps.get_model("slack", "TeamSlack")
     db_alias = schema_editor.connection.alias
     TeamSlack.objects.using(db_alias).all().delete()

@@ -4,7 +4,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
-def forwards_func(apps, schema_editor):
+def forwards_func(apps, schema_editor):  # pragma: no cover
     UserLevel = apps.get_model("gamification", "UserLevel")
     User = apps.get_model("core", "User")
     db_alias = schema_editor.connection.alias
@@ -16,7 +16,7 @@ def forwards_func(apps, schema_editor):
     )
 
 
-def reverse_func(apps, schema_editor):
+def reverse_func(apps, schema_editor):  # pragma: no cover
     UserLevel = apps.get_model("gamification", "UserLevel")
     db_alias = schema_editor.connection.alias
     UserLevel.objects.using(db_alias).all().delete()

@@ -1,7 +1,7 @@
+from django.contrib.auth import logout
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.urls import logout
 
 from api.serializers.user import RegisterSerializer, LoginSerializer, TeammateSerializer
 from api.utils import IsTeamTasksUser, IsTeamTasksMember

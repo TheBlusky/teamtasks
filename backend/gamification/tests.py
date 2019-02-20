@@ -10,7 +10,7 @@ from gamification.utils import xp_needed_for_level_up
 real_datetime_class = datetime.datetime
 
 
-def mock_datetime(target, datetime_module):
+def mock_datetime(target, datetime_module):  # pragma: no cover
     class DatetimeSubclassMeta(type):
         @classmethod
         def __instancecheck__(mcs, obj):
@@ -376,12 +376,33 @@ class GamificationTestCase(TestCase):
         self.assertEqual(response.json()["detail"], "too_early")
 
         with mock_datetime(
+            datetime.datetime(now.year, now.month, now.day, 5, 0), datetime
+        ):
+            response = client2.get("/gamification/ping_user/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()["users"]), 0)
+
+        with mock_datetime(
+            datetime.datetime(now.year, now.month, now.day, 11, 0), datetime
+        ):
+            response = client2.get("/gamification/ping_user/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()["users"]), 1)
+
+        with mock_datetime(
             datetime.datetime(now.year, now.month, now.day, 11, 0), datetime
         ):
             response = client2.post(
                 "/gamification/ping_user/", data={"username": "ping_01"}
             )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        with mock_datetime(
+            datetime.datetime(now.year, now.month, now.day, 11, 0), datetime
+        ):
+            response = client2.get("/gamification/ping_user/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()["users"]), 0)
 
         with mock_datetime(
             datetime.datetime(now.year, now.month, now.day, 11, 0), datetime

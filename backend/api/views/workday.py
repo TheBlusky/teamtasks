@@ -53,6 +53,16 @@ class WorkDayViewSet(viewsets.ViewSet):
             {"status": "ok", "data": WorkdaySerializer(user.current_workday).data}
         )
 
+    @action(methods=["get"], detail=False)
+    def previous(self, request):
+        user = User.objects.get(django_user=request.user)
+        workday = WorkDay.objects.filter(user=user).order_by("-day").first()
+        if not workday:
+            raise NotFound()
+        return Response(
+            {"status": "ok", "data": WorkdaySerializer(workday).data}
+        )
+
     @action(methods=["post"], detail=False)
     def validate_planning(self, request):
         user = User.objects.get(django_user=request.user)

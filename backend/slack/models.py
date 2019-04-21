@@ -30,7 +30,7 @@ class TeamSlack(models.Model):
         )
         message = (
             f"{slack_username}: You have not planned your teamtasks"
-            "today. Hurry up or you'll lose HP ! 😱😱😱}"
+            "today. Hurry up or you'll lose HP ! 😱😱😱"
         )
         data = {
             "text": message,

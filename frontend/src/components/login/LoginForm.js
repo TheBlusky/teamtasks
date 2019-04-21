@@ -9,7 +9,10 @@ class LoginForm extends Component {
     password: ''
   }
 
-  login = () => {
+  login = (event) => {
+    if (event) {
+      event.preventDefault()
+    }
     let go = true
     if (this.state.username === '') {
       this.props.displayError('Username should not be empty.')
@@ -25,33 +28,35 @@ class LoginForm extends Component {
   render () {
     return (
       <div>
-        <FormGroup
-          label='Username'
-          labelFor='input-username'>
-          <InputGroup
-            id='input-username'
-            placeholder='Enter your username...'
-            value={this.state.username}
-            onChange={({target}) => { this.setState({username: target.value}) }}
-            type='text' />
-        </FormGroup>
-        <FormGroup
-          label='Password'
-          labelFor='input-password'>
-          <InputGroup
-            id='input-password'
-            placeholder='Enter your password...'
-            value={this.state.password}
-            onChange={({target}) => { this.setState({password: target.value}) }}
-            type='password' />
-        </FormGroup>
-        <div style={{'textAlign': 'center'}}>
-          {
-            this.props.loading
-              ? <Spinner size={30} />
-              : <Button onClick={this.login}>Login</Button>
-          }
-        </div>
+        <form onSubmit={this.login}>
+          <FormGroup
+            label='Username'
+            labelFor='input-l-username'>
+            <InputGroup
+              id='input-l-username'
+              placeholder='Enter your username...'
+              value={this.state.username}
+              onChange={({target}) => { this.setState({username: target.value}) }}
+              type='text' />
+          </FormGroup>
+          <FormGroup
+            label='Password'
+            labelFor='input-l-password'>
+            <InputGroup
+              id='input-l-password2'
+              placeholder='Enter your password...'
+              value={this.state.password}
+              onChange={({target}) => { this.setState({password: target.value}) }}
+              type='password' />
+          </FormGroup>
+          <div style={{'textAlign': 'center'}}>
+            {
+              this.props.loading
+                ? <Spinner size={30} />
+                : <Button type='submit' >Login</Button>
+            }
+          </div>
+        </form>
       </div>
     )
   }

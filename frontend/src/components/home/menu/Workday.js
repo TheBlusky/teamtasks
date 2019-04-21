@@ -6,7 +6,6 @@ import * as actions from '../../../redux/actions'
 import { EDIT_WORKDAY } from '../../../reducers/displayedPage'
 
 const TODAY = 0
-const TOMORROW = 1
 
 class Workday extends Component {
   createWorkday = (when) => {
@@ -47,15 +46,11 @@ class Workday extends Component {
                   : <MenuItem key={5} icon='edit' text='Plan another day'>
                     <MenuItem key={6} icon='play' text='Tasks for today'
                       onClick={() => this.createWorkday(TODAY)} />
-                    <MenuItem key={7} icon='fast-forward' text='Tasks for tomorrow'
-                      onClick={() => this.createWorkday(TOMORROW)} />
                   </MenuItem>
               ]
               : [
                 <MenuItem key={9} icon='play' text='Create tasks for today'
-                  onClick={() => this.createWorkday(TODAY)} />,
-                <MenuItem key={10} icon='fast-forward' text='Create tasks for tomorrow'
-                  onClick={() => this.createWorkday(TOMORROW)} />
+                  onClick={() => this.createWorkday(TODAY)} />
               ]
         }
       </BPMenu>

@@ -26,7 +26,7 @@ class TeamSlack(models.Model):
     def handle_pinghistory_saved(self, ping_history: PingHistory):
         du = ping_history.pinged.django_user
         slack_username = (
-            f"<@{self.users[du.id]}>" if du.id in self.users else du.username
+            f"<@{self.users[str(du.id)]}>" if str(du.id) in self.users else du.username
         )
         message = (
             f"{slack_username}: You have not planned your teamtasks "

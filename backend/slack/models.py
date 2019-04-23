@@ -29,7 +29,7 @@ class TeamSlack(models.Model):
             f"<@{self.users[du.id]}>" if du.id in self.users else du.username
         )
         message = (
-            f"{slack_username}: You have not planned your teamtasks"
+            f"{slack_username}: You have not planned your teamtasks "
             "today. Hurry up or you'll lose HP ! 😱😱😱"
         )
         data = {
